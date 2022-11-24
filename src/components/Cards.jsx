@@ -47,7 +47,7 @@ function Cards() {
               <Text className={classes.title}>PAIEMENT</Text>
             </Group>
             <SimpleGrid cols={3} mt="md">
-              <Link to="/restauration" className={classes.item}>
+              <Link to="/dashboard/restauration" className={classes.item}>
               <UnstyledButton >
               <div className="flex flex-col items-center justify-center">
               <BiRestaurant color={theme?.colors.green[6]} size={32} />
@@ -57,7 +57,7 @@ function Cards() {
               </div>
             </UnstyledButton>
               </Link>
-            <Link to="/medical" className={classes.item}>
+            <Link to="/dashboard/medical" className={classes.item}>
             <UnstyledButton>
             <div className="flex flex-col items-center justify-center">
               <FaBriefcaseMedical color={theme?.colors.red[6]} size={32} />
@@ -90,7 +90,7 @@ function Cards() {
               <Text className={classes.title}>DEPOT</Text>
             </Group>
             <SimpleGrid cols={1} mt="md">
-              <Link to="/depot" className={classes.item}>
+              <Link to="/dashboard/depot" className={classes.item}>
               <UnstyledButton >
               <div className="flex flex-col items-center justify-center">
                 <FcMoneyTransfer color={theme?.colors.green[6]} size={32} />

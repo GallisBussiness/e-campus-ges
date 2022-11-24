@@ -7,10 +7,11 @@ import { useLocation } from 'react-router-dom';
 import { getCompteByCode } from '../services/compteService';
 import { createRetrait } from '../services/operationService';
 import { useRef } from 'react';
-import { Divider } from '@mantine/core';
+import { Divider, Image } from '@mantine/core';
+import { env } from '../env';
 
 
-function Operation() {
+function Operation({auth}) {
 
   const [value,setValue] = useState('')
   const [hasError,setHasError] = useState(false)
@@ -32,7 +33,7 @@ const {data:compte,mutate} = useMutation((code) => getCompteByCode(code), {
     }
     else {
       setHasError(false)
-      mutateR({id: _.id,montant: price, description: "paiment repas restaurant"})
+      mutateR({compte: _._id,montant: price, responsable: auth._id})
     }
     }
   },
@@ -82,7 +83,13 @@ useEffect(() => {
         <h1 className="text-3xl font-bold uppercase">INFORMATIONS DE L'ETUDIANT </h1>
          </div>
         {compte ? <div className="my-4">
-              
+        <div style={{ width: 200, marginLeft: 'auto', marginRight: 'auto' }} className="my-5">
+      <Image
+        radius="sm"
+        src={`${env.baseServerURL}/${compte.etudiant.avatar}`}
+        alt="etudiant profile"
+      />
+    </div>
     <div className="overflow-x-auto relative mx-10">
     <table className="w-full text-sm text-left text-white">
         <thead className="text-xs text-white uppercase bg-black">

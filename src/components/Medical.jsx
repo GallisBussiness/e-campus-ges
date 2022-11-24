@@ -39,7 +39,7 @@ function Medical() {
     const navigate = useNavigate()
 
     const goToOperation = (price) => {
-      navigate('/operation', {state: {price}})
+      navigate('/dashboard/operation', {state: {price}})
     }
 
   return (

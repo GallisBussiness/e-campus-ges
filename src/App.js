@@ -1,14 +1,24 @@
 import { MantineProvider } from '@mantine/core';
-import Cards from './components/Cards';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Restaurations from './components/Restaurations';
-import Medical from './components/Medical';
-import Operation from './components/Operation';
-import Depot from './components/Depot';
-import { AuthenticationForm } from './components/Login';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AbilityContext } from './casl/can';
 import ability from './casl/ability';
+import Login from './components/Login';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { AuthProvider } from 'react-auth-kit';
+import { env } from './env';
+import { useIsAuthenticated } from 'react-auth-kit';
+import Dashboard from './components/Dashboard';
 
+
+const queryClient = new QueryClient(
+  {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  }
+);
 
 export default function App() {
 
@@ -16,18 +26,31 @@ export default function App() {
   return (
     <MantineProvider withGlobalStyles>
     <AbilityContext.Provider value={ability}>
+    <QueryClientProvider client={queryClient}>
+    <AuthProvider authType = {'localstorage'}
+                  authName={env.tokenStorageName}
+                  cookieDomain={window.location.hostname}
+    cookieSecure={window.location.protocol === "https:"}>
     <BrowserRouter>
           <Routes>
-              <Route path="/" element={<AuthenticationForm />}/>
-              <Route path="/services" element={<Cards />}/>
-              <Route path="/restauration" element={<Restaurations />}/>
-              <Route path="/medical" element={<Medical />}/>
-              <Route path="/operation" element={<Operation />}/>
-              <Route path="/depot" element={<Depot />}/>
+              <Route path="/" element={<Login />}/>
+              <Route path="/login" element={<Login />}/>
+              <Route path="/dashboard/*" element={<PrivateRoute><Dashboard /></PrivateRoute>}/>
           </Routes>
         </BrowserRouter>
+   
+    </AuthProvider>
+    </QueryClientProvider>
     </AbilityContext.Provider>
-     
-    </MantineProvider>
+     </MantineProvider>
   );
+}
+
+
+const PrivateRoute = ({children}) => {
+  const hasAuth = useIsAuthenticated()()
+  return (
+    <>
+     {hasAuth ? children: <Navigate to="/login" />}
+    </>);
 }

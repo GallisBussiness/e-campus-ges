@@ -1,3 +1,4 @@
 export const env = {
-    baseServerURL: 'http://localhost:8080/api'
+    baseServerURL: 'http://localhost:3001',
+    tokenStorageName: '_auth__ecampus_ges'
 }

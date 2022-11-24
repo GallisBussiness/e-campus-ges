@@ -11,7 +11,7 @@ import { InputNumber } from 'primereact/inputnumber'
 import { GiPayMoney } from 'react-icons/gi'
 
 
-function Depot() {
+function Depot({auth}) {
 
     const [value,setValue] = useState('')
     const [curCode,setCurCode] = useState('');
@@ -31,8 +31,7 @@ function Depot() {
           setValue('')
         }
       })
-      
-      const { mutate:mutateD } = useMutation((data) => createDepot(data), {
+      const { mutate:mutateD,isLoading } = useMutation((data) => createDepot(data), {
         onSuccess:(_) => {
             toast.current.show({ severity: 'info', summary: 'Creation Depot', detail: 'Paiement éffectué !!', life: 2000 });
             successRef.current.play()
@@ -54,7 +53,7 @@ function Depot() {
       const confMontant = (v) => isNaN(v) ? setMontant(0) : setMontant(v);
 
       const Depot = (id) => {
-        const d = {id,montant, description: `Depot de ${montant} FCFA`};
+        const d = {compte:id,montant,responsable: auth._id};
         mutateD(d);
       }
       
@@ -127,7 +126,7 @@ function Depot() {
         <InputNumber value={montant} onValueChange={(e) => confMontant(e.value)} mode="currency" currency="XOF" locale="fr-FR"
          className="" placeholder="Montant*" />
          <div className="my-4">
-         <Button leftIcon={<GiPayMoney size={14} />} className="bg-blue-800" onClick={() => Depot(compte.id)}>
+         <Button leftIcon={<GiPayMoney size={14} />} loading={isLoading} className="bg-blue-800" onClick={() => Depot(compte._id)}>
             DEPOSER SUR LE COMPTE
         </Button>
          </div>

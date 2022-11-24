@@ -1,4 +1,12 @@
-import { useForm } from '@mantine/form';
+import { useEffect, useRef} from 'react';
+import { useAuthUser, useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import {  useNavigate } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useMutation } from 'react-query'
+import {Controller, useForm } from 'react-hook-form';
+import { Toast } from 'primereact/toast';
+import { login } from '../services/authservice';
 import {
   TextInput,
   PasswordInput,
@@ -7,77 +15,97 @@ import {
   Group,
   Button,
   Stack,
+  LoadingOverlay,
 } from '@mantine/core';
-import { useContext, useEffect} from 'react';
-import { AbilityContext, Can } from '../casl/can';
-import { AbilityBuilder, PureAbility } from '@casl/ability';
 
-function updateAbility(ability, user) {
-  const { can,cannot, rules } = new AbilityBuilder(PureAbility);
-
-  if (user.role === 'admin') {
-    can('manage', 'all');
-  } else {
-    cannot('create', 'depotr');
-    can('create','depot')
-  }
-
-  ability.update(rules);
-}
-
-
-export function AuthenticationForm(props) {
-
-  const ability = useContext(AbilityContext);
+const schema = yup.object({
+    username: yup.string()
+    .required(),
+   password: yup.string().required(),
+  }).required();
   
 
-  const form = useForm({
-    initialValues: {
-      email: '',
-      name: '',
-      password: '',
-      terms: true,
-    },
+const Login = () => {
 
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-    },
-  });
+    const toast = useRef();
+    const isAuth = useIsAuthenticated();
+    const auth = useAuthUser()()
+    const signIn = useSignIn();
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      if(isAuth()) {
+        const targetDashboard = '/dashboard';
+        navigate(targetDashboard, { replace: true });
+      }
+      return;
+    }, [isAuth,navigate,auth])
 
-  useEffect(() => {
-    const user = {name: "Mamdou",role: "user"};
-    updateAbility(ability, user)
-  }, [ability]);
+    const defaultValues = {username:'',password:''};
+    const { control, handleSubmit, formState: { errors } } = useForm({
+      resolver: yupResolver(schema),
+      defaultValues
+    });
+
+    const {mutate,isLoading} = useMutation((data) => login(data), {
+        onSuccess(data) { 
+          toast.current.show({severity: 'success', summary: 'Bienvenu !!!', detail: 'Connexion réussi'});
+          if(signIn({token: data?.token,
+            expiresIn: 3600,
+            tokenType: "Bearer",
+            authState: {id:data?.id},
+               })){ 
+                const targetDashboard = '/dashboard';
+                navigate(targetDashboard, { replace: true });
+                }else {
+                  toast.current.show({severity: 'error', summary: 'Une erreur s\'est produite !! ', detail: 'Connexion Echoué'});
+             }
+        },
+        onError:(_) => {
+          toast.current.show({severity: 'error', summary: 'username et/ou mot de passe incorrect !!!', detail: 'Connexion Echoué'});
+        }
+      })
+
+    const onConnect = data => {
+        mutate(data);
+       };   
 
   return (
-    <div className="flex items-center justify-center h-screen w-1/3 mx-auto">
-    <Paper radius="md" p="xl" withBorder {...props} className="w-full">
+    <div className="h-full w-full bg-green-200">
+<div className="flex items-center justify-center h-screen w-1/3 mx-auto">
+<LoadingOverlay visible={isLoading} overlayBlur={2} />
+    <Paper radius="md" p="xl" withBorder className="w-full">
       <Text size="lg" weight={500}>
         E-CAMPUS GESTION
       </Text>
-      <Can I="create" a="depot" ability={ability}>
-        <button onClick={()=> console.log('create depot')}>Create Depot</button>
-      </Can>
-      <form onSubmit={form.onSubmit(() => {})}>
+      <form onSubmit={handleSubmit(onConnect)} method="POST">
         <Stack>
-          <TextInput
-            required
-            label="Email"
-            placeholder="gallis@child.dev"
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
-          />
-
-          <PasswordInput
-            required
-            label="Password"
-            placeholder="Your password"
-            value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
-          />
+        <Controller control={control} name="username" render={({field}) => (
+                    <>
+                     <TextInput
+                    required
+                    label="Email"
+                    placeholder="gallis@child.dev"
+                    value={field.value}
+                    onChange={(event) => field.onChange(event.currentTarget.value)}
+                    error={errors.username && 'Invalid email'}
+                        />
+                    </>
+                     )}/>
+         
+         <Controller control={control} name="password" render={({field}) => (
+                    <>
+                        <PasswordInput
+                        required
+                        label="Mot de Passe"
+                        placeholder="Votre mot de passe"
+                        value={field.value}
+                        onChange={(event) => field.onChange(event.currentTarget.value)}
+                        error={errors.password && 'Password invalid !!'}
+                    />
+                    </>
+                     )}/>
+        
         </Stack>
 
         <Group position="apart" mt="xl">
@@ -85,7 +113,13 @@ export function AuthenticationForm(props) {
         </Group>
       </form>
     </Paper>
+    <Toast ref={toast} />
     </div>
+    </div>
+    
     
   );
 }
+
+
+export default Login;
