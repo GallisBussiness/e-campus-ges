@@ -5,10 +5,9 @@ import { getAuth } from "../services/authservice"
 import Cards from "./Cards"
 import Depot from "./Depot"
 import GlobalLoadingIndicator from "./GlobalLoadingIndicator"
-import Medical from "./Medical"
 import { Navbar } from "./Navbar"
 import Operation from "./Operation"
-import Restaurations from "./Restaurations"
+import Service from "./Service"
 
 function Dashboard() {
 
@@ -27,8 +26,7 @@ function Dashboard() {
      <Routes>
      <Route path="" element={<Cards />} />
      <Route path="/services" element={<Cards />}/>
-     <Route path="/restauration" element={<Restaurations auth={data}/>}/>
-    <Route path="/medical" element={<Medical auth={data} />}/>
+     <Route path="/services/:id" element={<Service auth={data} />}/>
     <Route path="/operation" element={<Operation auth={data} />}/>
     <Route path="/depot" element={<Depot auth={data} />}/>
      </Routes>

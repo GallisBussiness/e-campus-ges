@@ -21,7 +21,7 @@ function Operation({auth}) {
   const toast = useRef(null);
   const successRef = useRef(null);
   const errorRef = useRef(null);
-  const {price} = location.state;
+  const {price,payement} = location.state;
 
 const {data:compte,mutate} = useMutation((code) => getCompteByCode(code), {
   onSuccess: (_) => {
@@ -33,7 +33,7 @@ const {data:compte,mutate} = useMutation((code) => getCompteByCode(code), {
     }
     else {
       setHasError(false)
-      mutateR({compte: _._id,montant: price, responsable: auth._id})
+      mutateR({compte: _._id,montant: price, responsable: auth._id, payement_subject: payement})
     }
     }
   },

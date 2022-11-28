@@ -1,9 +1,8 @@
 import { createStyles, Card, Text, SimpleGrid, UnstyledButton, Group } from '@mantine/core';
-import { BiRestaurant } from 'react-icons/bi'
-import { FaBriefcaseMedical } from 'react-icons/fa'
-import { MdLocalCafe, MdSportsSoccer } from 'react-icons/md'
+
 import { FcMoneyTransfer } from 'react-icons/fc'
 import { Link } from 'react-router-dom';
+import Services from './Services';
 
 
 const useStyles = createStyles((theme) => ({
@@ -41,49 +40,7 @@ function Cards() {
 
   return (
     <>
-  <div className="flex items-center justify-center w-1/2 mx-auto my-36">
-        <Card withBorder radius="md" className={classes.card}>
-            <Group position="apart">
-              <Text className={classes.title}>PAIEMENT</Text>
-            </Group>
-            <SimpleGrid cols={3} mt="md">
-              <Link to="/dashboard/restauration" className={classes.item}>
-              <UnstyledButton >
-              <div className="flex flex-col items-center justify-center">
-              <BiRestaurant color={theme?.colors.green[6]} size={32} />
-              <Text size="xs" mt={7}>
-              RESTAURATIONS
-              </Text>
-              </div>
-            </UnstyledButton>
-              </Link>
-            <Link to="/dashboard/medical" className={classes.item}>
-            <UnstyledButton>
-            <div className="flex flex-col items-center justify-center">
-              <FaBriefcaseMedical color={theme?.colors.red[6]} size={32} />
-              <Text size="xs" mt={7}>
-                MEDICAL
-              </Text>
-              </div>
-            </UnstyledButton>
-            </Link>
-            <UnstyledButton className={classes.item}>
-              <MdSportsSoccer color={theme?.colors.cyan[6]} size={32} />
-              <Text size="xs" mt={7}>
-                SPORT
-              </Text>
-            </UnstyledButton>
-            <UnstyledButton  className={classes.item}>
-            <div className="flex flex-col items-center justify-center">
-              <MdLocalCafe color={theme?.colors.orange[6]} size={32} />
-              <Text size="xs" mt={7}>
-              CAFETARIAT
-              </Text>
-              </div>
-            </UnstyledButton>
-            </SimpleGrid>
-          </Card>
-  </div>
+    <Services />
   <div className="flex items-center justify-center w-1/2 mx-auto my-36">
         <Card withBorder radius="md" className={classes.card}>
             <Group position="apart">
