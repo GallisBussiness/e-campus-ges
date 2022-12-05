@@ -3,6 +3,8 @@ import { createStyles, Card, Text, SimpleGrid, UnstyledButton, Group, LoadingOve
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getServices } from '../services/serviceService';
+import { AbilityContext, Can } from '../casl/can';
+import { useContext } from 'react';
 
 const useStyles = createStyles((theme) => ({
     card: {
@@ -36,11 +38,13 @@ const useStyles = createStyles((theme) => ({
 
 function Services() {
     const { classes } = useStyles();
+    const ability = useContext(AbilityContext);
     const key = ['getAllServices'];
     const {data: services, isLoading} = useQuery(key, () => getServices());
   return (
     <>
-    <LoadingOverlay visible={isLoading} overlayBlur={2} />
+          <Can I="manage" a="ticket" ability={ability}>
+             <LoadingOverlay visible={isLoading} overlayBlur={2} />
      <div className="flex items-center justify-center w-1/2 mx-auto my-36">
         <Card withBorder radius="md" className={classes.card}>
             <Group position="apart">
@@ -63,6 +67,8 @@ function Services() {
             </SimpleGrid>
           </Card>
   </div>
+          </Can>
+   
     </>
   )
 }

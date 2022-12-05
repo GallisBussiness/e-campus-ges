@@ -1,7 +1,9 @@
 import { createStyles, Card, Text, SimpleGrid, UnstyledButton, Group } from '@mantine/core';
+import { useContext } from 'react';
 
 import { FcMoneyTransfer } from 'react-icons/fc'
 import { Link } from 'react-router-dom';
+import { AbilityContext, Can } from '../casl/can';
 import Services from './Services';
 
 
@@ -37,11 +39,12 @@ const useStyles = createStyles((theme) => ({
 
 function Cards() {
   const { classes, theme } = useStyles();
-
+  const ability = useContext(AbilityContext);
   return (
     <>
     <Services />
-  <div className="flex items-center justify-center w-1/2 mx-auto my-36">
+    <Can I="manage" a="vente" ability={ability}>
+      <div className="flex items-center justify-center w-1/2 mx-auto my-36">
         <Card withBorder radius="md" className={classes.card}>
             <Group position="apart">
               <Text className={classes.title}>DEPOT</Text>
@@ -60,6 +63,8 @@ function Cards() {
             </SimpleGrid>
           </Card>
   </div>
+      </Can>
+  
     </>
   )
 }

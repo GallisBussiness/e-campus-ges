@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Sidebar } from 'primereact/sidebar'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { useSignOut } from "react-auth-kit";
 import { FaSignOutAlt } from "react-icons/fa";
+import { MdQueryStats } from "react-icons/md";
 
 export const Navbar = () => {
     const [visible,setVisible] = useState(false);
@@ -39,7 +40,9 @@ export const Navbar = () => {
     </button>
     <div className="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul className="flex flex-col p-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-1 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white">
-       
+      <li>
+        <Link to="stats" className="inline-block w-full px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-gradient-to-tl from-amber-700 to-amber-500 leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs">Statistiques <MdQueryStats className="inline w-4 h-4"/></Link>
+        </li>
         <li>
         <button onClick={logout} className="inline-block w-full px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-gradient-to-tl from-blue-700 to-blue-500 leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs">Se Déconnecter <FaSignOutAlt  className="inline w-4 h-4"/></button>
         </li>

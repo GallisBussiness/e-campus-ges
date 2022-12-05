@@ -9,3 +9,4 @@ export const updateEtudiant = (data) => {
 
 export const removeEtudiant = (id) => Api.delete('/etudiant/' + id).then(res => res.data);
 
+export const getEtudiantCount = () => Api.get('/etudiant/count').then(res => res.data);
