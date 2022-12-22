@@ -1,6 +1,4 @@
-import { useDebouncedValue } from '@mantine/hooks';
-import { InputText } from 'primereact/inputtext'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Toast } from 'primereact/toast';
 import { useMutation} from 'react-query';
 import { useLocation } from 'react-router-dom';
@@ -9,14 +7,13 @@ import { createRetrait } from '../services/operationService';
 import { useRef } from 'react';
 import { Divider, Image } from '@mantine/core';
 import { env } from '../env';
+import useScanDetection from 'use-scan-detection';
 
 
 function Operation({auth}) {
 
-  const [value,setValue] = useState('')
   const [hasError,setHasError] = useState(false)
   const [hasSuccess,setHasSuccess] = useState(false)
-  const [debounced] = useDebouncedValue(value, 200);
   const location = useLocation();
   const toast = useRef(null);
   const successRef = useRef(null);
@@ -36,9 +33,6 @@ const {data:compte,mutate} = useMutation((code) => getCompteByCode(code), {
       mutateR({compte: _._id,montant: price, responsable: auth._id, payement_subject: payement})
     }
     }
-  },
-  onSettled: (_) => {
-    setValue('')
   }
 })
 
@@ -57,20 +51,27 @@ const { mutate:mutateR } = useMutation((data) => createRetrait(data), {
   }
 })
 
-useEffect(() => {
-  if(debounced !== '') mutate(debounced)
-}, [debounced,mutate]);
+useScanDetection({
+  onComplete: mutate,
+  minLength: 13 // EAN13
+});
 
   return (
     <>
-    <div className="flex h-screen">
-        <div className="w-4/12 bg-slate-200 h-full">
+    <div className="flex">
+        <div className="w-4/12 h-full">
           
             <div className="flex flex-col items-center justify-center h-full">
             <div className="my-4 h-40 rounded-md flex items-center justify-center text-5xl font-bold w-full">
                {price} FCFA
           </div>
-            <InputText value={value} onChange={(e) => setValue(e.target.value)} autoFocus/>
+          <div className="w-full">
+            <Image
+              radius="md"
+              src="/scanner.jpg"
+              alt="scanner image"
+            />
+    </div>
             </div>
         </div>
         <div className="w-8/12">
