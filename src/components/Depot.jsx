@@ -1,24 +1,20 @@
-import { useDebouncedValue } from '@mantine/hooks';
-import { InputText } from 'primereact/inputtext'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Toast } from 'primereact/toast';
 import { useMutation} from 'react-query';
 import { getCompteByCode } from '../services/compteService';
 import { createDepot} from '../services/operationService';
 import { useRef } from 'react';
-import { Button, Divider } from '@mantine/core';
+import { Button, Divider, Image } from '@mantine/core';
 import { InputNumber } from 'primereact/inputnumber'
 import { GiPayMoney } from 'react-icons/gi'
+import useScanDetection from 'use-scan-detection';
 
 
 function Depot({auth}) {
-
-    const [value,setValue] = useState('')
     const [curCode,setCurCode] = useState('');
     const [montant,setMontant] = useState(0);
     const [hasError,setHasError] = useState(false)
     const [hasSuccess,setHasSuccess] = useState(false)
-    const [debounced] = useDebouncedValue(value, 200);
     const toast = useRef(null);
     const successRef = useRef(null);
     const errorRef = useRef(null);
@@ -26,9 +22,6 @@ function Depot({auth}) {
     const {data:compte,mutate} = useMutation((code) => getCompteByCode(code), {
         onSuccess: (_) => {
             setCurCode(_.code);
-        },
-        onSettled: (_) => {
-          setValue('')
         }
       })
       const { mutate:mutateD,isLoading } = useMutation((data) => createDepot(data), {
@@ -57,17 +50,24 @@ function Depot({auth}) {
         mutateD(d);
       }
       
-      useEffect(() => {
-        if(debounced !== '') mutate(debounced)
-      }, [debounced,mutate]);
+      useScanDetection({
+        onComplete: mutate,
+        minLength: 13 // EAN13
+      });
 
   return (
     <>
     <div className="flex h-screen">
-        <div className="w-4/12 bg-slate-200 h-full">
+        <div className="w-4/12 h-full">
           
             <div className="flex flex-col items-center justify-center h-full">
-            <InputText value={value} onChange={(e) => setValue(e.target.value)} autoFocus/>
+            <div className="w-full h-full">
+            <Image
+              radius="md"
+              src="/scanner.jpg"
+              alt="scanner image"
+            />
+    </div>
             </div>
         </div>
         <div className="w-8/12">

@@ -26,7 +26,8 @@ export const Navbar = () => {
    <Sidebar visible={visible} onHide={() => setVisible(false)}>
     <div className="flex items-center justify-center mb-5">
     <span> <img src="/ecampus.png" alt="logo" className="h-32 w-32" /></span>
-    </div>
+    </div>a501b048-2803-40d8-86f3-0b118c6477e9
+    
     <div className="flex flex-col space-y-1">
     <button onClick={logout} className="inline-block w-full px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer bg-gradient-to-tl from-blue-700 to-blue-500 leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs">Se Déconnecter</button>
     </div>
